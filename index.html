@@ -1,13 +1,1880 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <base target="_top">
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>เว็บของ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>✨ แซม AI - Your English Friend</title>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Kanit', 'Thasadith', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background-size: 400% 400%;
+            animation: gradientMove 15s ease infinite;
+            min-height: 100vh;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .app {
+            width: 100%;
+            max-width: 950px;
+            height: 92vh;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            box-shadow: 
+                0 30px 80px rgba(0, 0, 0, 0.25),
+                0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            animation: slideUp 0.6s ease-out;
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 25px;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: rotate(45deg);
+            animation: shimmer 3s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) rotate(45deg); }
+        }
+        
+        .avatar {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #ffd89b, #19547b);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            border: 4px solid white;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            animation: bounce 2s ease-in-out infinite;
+            position: relative;
+            z-index: 1;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+        
+        .info {
+            flex: 1;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .info h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .info p {
+            font-size: 14px;
+            font-weight: 300;
+            opacity: 0.95;
+        }
+        
+        .status {
+            position: relative;
+            z-index: 1;
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .status.ok {
+            background: linear-gradient(135deg, #10b981, #34d399);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+            animation: glow 2s ease-in-out infinite;
+        }
+        
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4); }
+            50% { box-shadow: 0 4px 25px rgba(16, 185, 129, 0.6); }
+        }
+        
+        .status.err {
+            background: linear-gradient(135deg, #ef4444, #f87171);
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+        }
+        
+        .status.warn {
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            box-shadow: 0 4px 15px rgba(251, 191, 36, 0.4);
+        }
+        
+        .chat {
+            flex: 1;
+            overflow-y: auto;
+            padding: 25px;
+            background: linear-gradient(to bottom, #f8fafc, #f1f5f9);
+            position: relative;
+        }
+        
+        .chat::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .chat::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 10px;
+        }
+        
+        .chat::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 10px;
+        }
+        
+        .msg {
+            margin-bottom: 18px;
+            display: flex;
+            animation: messageSlide 0.4s ease-out;
+        }
+        
+        @keyframes messageSlide {
+            from {
+                opacity: 0;
+                transform: translateY(15px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        .msg.user { justify-content: flex-end; }
+        
+        .bubble {
+            max-width: 75%;
+            padding: 14px 18px;
+            border-radius: 20px;
+            line-height: 1.6;
+            word-wrap: break-word;
+            position: relative;
+            transition: all 0.3s ease;
+            font-weight: 400;
+        }
+        
+        .bubble:hover {
+            transform: translateY(-2px);
+        }
+        
+        .msg.sam .bubble {
+            background: white;
+            color: #1e293b;
+            border: 2px solid #e0e7ff;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.15);
+        }
+        
+        .msg.sam .bubble::before {
+            content: '';
+            position: absolute;
+            left: -8px;
+            top: 15px;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 8px 8px 8px 0;
+            border-color: transparent white transparent transparent;
+        }
+        
+        .msg.user .bubble {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .msg.user .bubble::after {
+            content: '';
+            position: absolute;
+            right: -8px;
+            top: 15px;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 8px 0 8px 8px;
+            border-color: transparent transparent transparent #764ba2;
+        }
+        
+        .msg.err .bubble {
+            background: linear-gradient(135deg, #fee2e2, #fecaca);
+            border: 2px solid #fca5a5;
+            color: #991b1b;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2);
+        }
+        
+        .msg.info .bubble {
+            background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+            border: 2px solid #93c5fd;
+            color: #1e40af;
+            font-size: 13px;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+        }
+        
+        .typing {
+            padding: 12px 18px;
+            background: white;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .typing::after {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: #667eea;
+            border-radius: 50%;
+            animation: typingDot 1.4s infinite;
+        }
+        
+        .typing::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: #667eea;
+            border-radius: 50%;
+            animation: typingDot 1.4s infinite 0.2s;
+        }
+        
+        @keyframes typingDot {
+            0%, 60%, 100% { transform: translateY(0); opacity: 0.6; }
+            30% { transform: translateY(-8px); opacity: 1; }
+        }
+        
+        .input {
+            padding: 20px;
+            background: white;
+            border-top: 2px solid #e2e8f0;
+            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.05);
+        }
+        
+        .lang {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        
+        .lang button {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e0e7ff;
+            background: white;
+            color: #667eea;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .lang button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(102, 126, 234, 0.1);
+            transform: translate(-50%, -50%);
+            transition: width 0.5s, height 0.5s;
+        }
+        
+        .lang button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .lang button.on {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            transform: scale(1.02);
+        }
+        
+        .lang button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.2);
+        }
+        
+        .row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        
+        .mic, .speaker {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            font-size: 26px;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .mic::before, .speaker::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            transition: transform 0.5s;
+        }
+        
+        .mic:hover::before, .speaker:hover::before {
+            transform: translate(-50%, -50%) scale(1);
+        }
+        
+        .mic:hover:not(:disabled), .speaker:hover:not(:disabled) {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .mic:active:not(:disabled), .speaker:active:not(:disabled) {
+            transform: scale(0.95);
+        }
+        
+        .mic:disabled, .speaker:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            background: #cbd5e1;
+            box-shadow: none;
+        }
+        
+        .mic.on {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            animation: micPulse 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes micPulse {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 4px 15px rgba(240, 147, 251, 0.4);
+            }
+            50% {
+                transform: scale(1.1);
+                box-shadow: 0 8px 30px rgba(240, 147, 251, 0.6);
+            }
+        }
+        
+        .speaker.paused {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            animation: speakerBlink 1s ease-in-out infinite;
+        }
+        
+        @keyframes speakerBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        input {
+            flex: 1;
+            padding: 14px 18px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 15px;
+            font-family: 'Kanit', sans-serif;
+            outline: none;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        
+        input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            transform: translateY(-1px);
+        }
+        
+        input:disabled {
+            background: #f1f5f9;
+            cursor: not-allowed;
+        }
+        
+        .send {
+            padding: 14px 30px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .send::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+        
+        .send:hover::before {
+            left: 100%;
+        }
+        
+        .send:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .send:active:not(:disabled) {
+            transform: scale(0.98);
+        }
+        
+        .send:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        
+        .quick {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+        
+        .quick button {
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            border: 2px solid #e2e8f0;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #475569;
+        }
+        
+        .quick button:hover {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-color: transparent;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        /* Permission Modal */
+        .permission-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            animation: fadeIn 0.3s;
+        }
+        
+        .permission-modal.show {
+            display: flex;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .permission-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 400px;
+            margin: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s;
+            text-align: center;
+        }
+        
+        .permission-content h2 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #667eea;
+        }
+        
+        .permission-content p {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #475569;
+            margin-bottom: 20px;
+        }
+        
+        .permission-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .permission-buttons button {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .permission-buttons .allow {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .permission-buttons .allow:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .permission-buttons .deny {
+            background: #f1f5f9;
+            color: #475569;
+        }
+        
+        .permission-buttons .deny:hover {
+            background: #e2e8f0;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            .app { height: 95vh; border-radius: 25px; }
+            .header { padding: 20px; gap: 15px; }
+            .avatar { width: 60px; height: 60px; font-size: 32px; }
+            .info h1 { font-size: 24px; }
+            .info p { font-size: 13px; }
+            .chat { padding: 20px; }
+            .bubble { max-width: 80%; padding: 12px 16px; }
+            .input { padding: 16px; }
+            .lang button { padding: 10px 8px; font-size: 13px; }
+            .mic, .speaker { width: 50px; height: 50px; font-size: 24px; }
+            input { font-size: 16px; padding: 12px 16px; }
+            .send { padding: 12px 24px; }
+            .permission-content { padding: 25px; }
+            .permission-content h2 { font-size: 20px; }
+            .permission-content p { font-size: 14px; }
+        }
+
+        @media (max-width: 480px) {
+            body { padding: 8px; }
+            .app { height: 98vh; border-radius: 20px; }
+            .header { padding: 16px; gap: 12px; }
+            .avatar { width: 55px; height: 55px; font-size: 28px; border: 3px solid white; }
+            .info h1 { font-size: 22px; }
+            .info p { font-size: 12px; }
+            .status { font-size: 11px; padding: 6px 12px; }
+            .chat { padding: 16px; }
+            .bubble { max-width: 85%; padding: 10px 14px; font-size: 14px; }
+            .input { padding: 14px; }
+            .lang { gap: 10px; }
+            .lang button { font-size: 12px; padding: 10px; }
+            .mic, .speaker { width: 48px; height: 48px; font-size: 22px; }
+            .send { padding: 12px 20px; font-size: 14px; }
+            .quick button { font-size: 12px; padding: 7px 14px; }
+            .permission-content { padding: 20px; margin: 15px; }
+        }
+    </style>
 </head>
 <body>
-    <iframe style="width: 100%; height: 100vh;" scrolling="yes" src="https://script.google.com/macros/s/AKfycbw5Sqn4qk37J8ExmiXnRpIX_Ekfzv_mbo9msIng-zVWQ0aLil035RCP7IxV_mC0--f-Bw/exec" frameborder="0"></iframe>
+    <!-- Permission Modal -->
+    <div class="permission-modal" id="permissionModal">
+        <div class="permission-content">
+            <h2>🎤 ขออนุญาตใช้ไมโครโฟน</h2>
+            <p><b>แซม AI ต้องการใช้ไมโครโฟนเพื่อให้คุณพูดคุยด้วยเสียงได้</b></p>
+            <p style="font-size: 14px; color: #64748b; margin-top: 10px;">
+                📱 <b>สำหรับแท็บเล็ต/มือถือ:</b><br>
+                1. กดปุ่ม "อนุญาต" ด้านล่าง<br>
+                2. เบราว์เซอร์จะถามอีกครั้ง → กด "อนุญาต"<br>
+                3. ถ้าไม่ขึ้น → Settings → อนุญาตไมค์
+            </p>
+            <div class="permission-buttons">
+                <button class="deny" onclick="denyPermission()">ไม่ใช้ไมค์</button>
+                <button class="allow" onclick="requestMicPermission()">อนุญาต ✓</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="app">
+        <div class="header">
+            <div class="avatar">🤖</div>
+            <div class="info">
+                <h1 id="appTitle">แซม AI</h1>
+                <p id="appDesc">Multi-API Edition</p>
+            </div>
+            <div class="status" id="stat">Testing APIs...</div>
+        </div>
+        <div class="chat" id="chat"></div>
+        <div class="input">
+            <div class="lang">
+                <button class="on" id="ben">🌐 แปลภาษา</button>
+                <button id="bth">🇹🇭 คุยเป็นไทย</button>
+            </div>
+            <div class="row">
+                <button class="mic" id="mic" title="กดเพื่อพูด">🎤</button>
+                <button class="speaker" id="speaker">🔊</button>
+                <input type="text" id="inp" placeholder="Type to แซม..." dir="auto">
+                <button class="send" id="btn">Send</button>
+            </div>
+            <div class="quick" id="quickBtns"></div>
+        </div>
+    </div>
+    <script>
+        // ⚙️ API Configuration - พร้อมใช้งาน!
+        const API_CONFIGS = {
+            groq: {
+                key: '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',
+                enabled: true,
+                name: 'Groq',
+                models: ['llama-3.3-70b-versatile', 'mixtral-8x7b-32768']
+            },
+            gemini: {
+                key: 'AIzaSyAaeRUMdx-nVB36cQtIwD5-viXXQgYbOh4',
+                enabled: true,
+                name: 'Gemini',
+                models: ['gemini-1.5-flash', 'gemini-2.0-flash-exp', 'gemini-1.5-pro']
+            }
+        };
+        
+        let L = 'translate';
+        let H = [];
+        let R = null;
+        let IS = false;
+        let OK = false;
+        let CURRENT_API = null;
+        let SPEAKING = false;
+        let PAUSED = false;
+        let CURRENT_SEGMENTS = [];
+        let CURRENT_INDEX = 0;
+        let CURRENT_UTTERANCE = null;
+        let MIC_PERMISSION = null;
+        let MIC_RETRY_COUNT = 0;
+        const MAX_MIC_RETRIES = 3;
+
+        const TXT = {
+            translate: {
+                title: 'แซม AI - Translator',
+                desc: 'แปลไทย ⇄ อังกฤษ',
+                status: { 
+                    testing: 'Testing APIs...', 
+                    ready: (api) => `✓ ${api} Ready`,
+                    error: '✗ All APIs Failed' 
+                },
+                placeholder: 'พิมพ์หรือพูดภาษาไทยหรืออังกฤษ...',
+                send: 'Send',
+                welcome: '👋 <b>สวัสดีครับ! ผมแซม (Sam)</b>\n\n😊 ยินดีที่ได้รู้จักนะครับ!\n\n💬 <b>ผมช่วยอะไรได้บ้าง?</b>\n• พูดภาษาไทย → ผมแปลเป็นอังกฤษให้\n• พูดภาษาอังกฤษ → ผมแปลเป็นไทยให้\n\n🎤 <b>Tips:</b> ลองกดปุ่มไมค์แล้วพูดดูสิ! สะดวกกว่าพิมพ์เยอะเลย 😉',
+                error: '⚠️ <b>อุ๊ปส์! เกิดปัญหานิดหน่อย</b>\n\nระบบไม่สามารถเชื่อมต่อ API ได้ตอนนี้\n\n🔧 <b>ลองเช็คดูนะ:</b>\n• อินเทอร์เน็ตเชื่อมต่ออยู่ไหม?\n• API keys ยังใช้ได้อยู่ไหม?\n\n<small>Groq: https://console.groq.com\nGemini: https://makersuite.google.com</small>',
+                notReady: 'เดี๋ยวนะ ยังไม่พร้อมสักหน่อย... ลองรอแป๊บหรือรีเฟรชหน้าดูนะ 😅',
+                quickBtns: ['👋 สวัสดีครับ', '😊 สบายดีไหม?', '🙏 ขอบคุณมากครับ', '😄 ดีใจที่ได้รู้จัก']
+            },
+            th: {
+                title: 'แซม AI',
+                desc: 'เพื่อนสอนภาษาอังกฤษ',
+                status: { 
+                    testing: 'กำลังทดสอบ APIs...', 
+                    ready: (api) => `✓ ${api} พร้อม`,
+                    error: '✗ ทุก APIs ผิดพลาด' 
+                },
+                placeholder: 'พิมพ์คุยกับแซม...',
+                send: 'ส่ง',
+                welcome: '👋 <b>สวัสดีค่ะ! ฉันชื่อแซม (Sam)!</b>\n\nยินดีที่ได้รู้จักนะคะ! 😊\n\n📚 <b>ฉันช่วยอะไรได้บ้าง?</b>\n• สอนภาษาอังกฤษแบบเข้าใจง่าย\n• ตอบคำถามเรื่องไวยากรณ์\n• แนะนำวิธีจำคำศัพท์\n• แปลประโยคและอธิบาย\n• คุยเป็นเพื่อนได้ด้วย!\n\n💡 <b>Tips:</b> ถามอะไรมาได้เลย ไม่ต้องกังวล ฉันไม่ดุหรอก! 😄\n\nลองถามฉันซักอย่างสิ เช่น "Past Tense คืออะไร?" หรือ "สอนคำทักทายหน่อย" 🎯',
+                error: '⚠️ <b>อุ๊ปส์! เกิดปัญหานิดหน่อย</b>\n\nระบบไม่สามารถเชื่อมต่อ API ได้ตอนนี้\n\n🔧 <b>ลองเช็คดูนะคะ:</b>\n• อินเทอร์เน็ตเชื่อมต่ออยู่ไหม?\n• API keys ยังใช้ได้อยู่ไหม?\n\n<small>Groq: https://console.groq.com\nGemini: https://makersuite.google.com</small>',
+                notReady: 'เดี๋ยวนะคะ ยังไม่พร้อมสักหน่อย... ลองรอแป๊บหรือรีเฟรชหน้าดูนะคะ 😅',
+                quickBtns: ['👋 สวัสดี แซม!', '📖 สอน Past Tense หน่อย', '💭 มีคำถาม!', '🎯 ทดสอบความรู้หน่อย']
+            }
+        };
+
+        // เริ่มต้น
+        window.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 แซม AI Multi-API starting...');
+            detectDevice();
+            initVoice();
+            initButtons();
+            testAPIs();
+            updateUI();
+            updateSpeakerButton();
+        });
+
+        // Detect device และ browser
+        function detectDevice() {
+            const ua = navigator.userAgent;
+            const isTablet = /(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua);
+            const isMobile = /Mobile|Android|iPhone/i.test(ua);
+            const isIOS = /iPad|iPhone|iPod/.test(ua);
+            const isSafari = /^((?!chrome|android).)*safari/i.test(ua);
+            
+            console.log('Device info:', {
+                isTablet,
+                isMobile,
+                isIOS,
+                isSafari,
+                userAgent: ua
+            });
+            
+            // ไม่แสดงข้อความแจ้งเตือนทันที - ให้ผู้ใช้ลองกดไมค์ก่อน
+            // ถ้ามีปัญหาจริงๆ ระบบจะแสดง Modal อัตโนมัติ
+        }
+
+        // ตั้งค่าปุ่มทั้งหมด
+        function initButtons() {
+            document.getElementById('ben').addEventListener('click', () => changeLang('translate'));
+            document.getElementById('bth').addEventListener('click', () => changeLang('th'));
+            document.getElementById('btn').addEventListener('click', sendMessage);
+            document.getElementById('mic').addEventListener('click', handleMicClick);
+            document.getElementById('speaker').addEventListener('click', toggleSpeech);
+            
+            document.getElementById('inp').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+            
+            console.log('✓ Buttons initialized');
+        }
+
+        // จัดการการกดปุ่มไมค์
+        async function handleMicClick() {
+            console.log('🎤 Mic button clicked');
+            
+            // ถ้ากำลังฟังอยู่ ให้หยุด
+            if (IS && R) {
+                console.log('🎤 Stopping voice recognition');
+                R.stop();
+                return;
+            }
+            
+            // เช็ค permission ก่อน
+            if (MIC_PERMISSION === null) {
+                // ลองขอ permission
+                try {
+                    await checkMicPermission();
+                } catch (e) {
+                    console.error('❌ Permission check failed:', e);
+                    showPermissionModal();
+                    return;
+                }
+            }
+            
+            if (MIC_PERMISSION === false) {
+                showPermissionModal();
+                return;
+            }
+            
+            // เริ่มใช้ไมค์
+            toggleMic();
+        }
+
+        // เช็ค Microphone Permission
+        async function checkMicPermission() {
+            console.log('🔍 Checking microphone permission...');
+            
+            try {
+                // ลองขอ permission จริงๆ
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                
+                // ได้แล้ว ปิดทันที
+                stream.getTracks().forEach(track => track.stop());
+                
+                MIC_PERMISSION = true;
+                console.log('✅ Microphone permission granted');
+                
+                // แสดงข้อความ (เฉพาะครั้งแรก)
+                if (!document.querySelector('.msg.info')) {
+                    showMessage('info', '✅ ไมโครโฟนพร้อมใช้งาน!');
+                }
+                
+                return true;
+            } catch (error) {
+                console.error('❌ Microphone permission error:', error);
+                MIC_PERMISSION = false;
+                
+                // ไม่แสดง Error Message ที่นี่ - จะแสดงใน Modal แทน
+                return false;
+            }
+        }
+
+        // แสดง Permission Modal
+        function showPermissionModal() {
+            document.getElementById('permissionModal').classList.add('show');
+        }
+
+        // ซ่อน Permission Modal
+        function hidePermissionModal() {
+            document.getElementById('permissionModal').classList.remove('show');
+        }
+
+        // ขอ Permission อีกครั้ง
+        async function requestMicPermission() {
+            console.log('🎤 Requesting microphone permission...');
+            hidePermissionModal();
+            
+            // แสดงข้อความรอ
+            showMessage('info', '⏳ กำลังขออนุญาต... กรุณาอนุญาตในหน้าต่างที่เด้งขึ้น');
+            
+            const granted = await checkMicPermission();
+            
+            if (granted) {
+                // เริ่มใช้ไมค์เลย
+                setTimeout(() => {
+                    toggleMic();
+                }, 500);
+            } else {
+                // ไม่ได้อนุญาต
+                showMessage('err', '❌ <b>ไม่ได้รับอนุญาต</b>\n\nวิธีแก้ไข:\n• กดไอคอน 🔒 ข้าง URL\n• เลือก "Site settings"\n• อนุญาต Microphone\n• รีเฟรชหน้า');
+            }
+        }
+
+        // ปฏิเสธ Permission
+        function denyPermission() {
+            console.log('❌ User denied microphone permission');
+            hidePermissionModal();
+            MIC_PERMISSION = false;
+            
+            showMessage('info', 'ℹ️ ไม่เป็นไร! คุณยังสามารถ <b>พิมพ์</b> ข้อความได้ตามปกติ 😊\n\nถ้าต้องการใช้เสียงทีหลัง กดปุ่มไมค์อีกครั้ง');
+        }
+
+        // ตั้งค่า UI ตามภาษา
+        function updateUI() {
+            const t = TXT[L];
+            document.getElementById('appTitle').textContent = t.title;
+            document.getElementById('appDesc').textContent = t.desc;
+            document.getElementById('inp').placeholder = t.placeholder;
+            document.getElementById('btn').textContent = t.send;
+            
+            const quick = document.getElementById('quickBtns');
+            quick.innerHTML = '';
+            t.quickBtns.forEach((text) => {
+                const btn = document.createElement('button');
+                btn.textContent = text;
+                btn.addEventListener('click', () => {
+                    const cleanText = text.replace(/^[^\s]+ /, '');
+                    document.getElementById('inp').value = cleanText;
+                    sendMessage();
+                });
+                quick.appendChild(btn);
+            });
+            console.log('✓ UI updated for language:', L);
+        }
+
+        // เปลี่ยนภาษา
+        function changeLang(l) {
+            console.log('🔄 Changing language to:', l);
+            L = l;
+            document.getElementById('ben').classList.toggle('on', l === 'translate');
+            document.getElementById('bth').classList.toggle('on', l === 'th');
+            if (R) R.lang = 'th-TH';
+            
+            if (SPEAKING) {
+                speechSynthesis.cancel();
+                SPEAKING = false;
+                PAUSED = false;
+                CURRENT_SEGMENTS = [];
+                CURRENT_INDEX = 0;
+            }
+            
+            updateUI();
+            updateSpeakerButton();
+        }
+
+        // ตั้งค่า Voice Recognition
+        function initVoice() {
+            if (!window.webkitSpeechRecognition && !window.SpeechRecognition) {
+                console.log('⚠️ Voice recognition not supported');
+                document.getElementById('mic').disabled = true;
+                document.getElementById('mic').title = 'เบราว์เซอร์ไม่รองรับ Voice Recognition';
+                showMessage('info', 'ℹ️ เบราว์เซอร์นี้ไม่รองรับการพูด กรุณาใช้ Chrome, Edge หรือ Safari');
+                return;
+            }
+            
+            try {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                R = new SpeechRecognition();
+                R.continuous = false;
+                R.interimResults = false;
+                R.lang = 'th-TH';
+                R.maxAlternatives = 1;
+                
+                R.onstart = () => {
+                    console.log('🎤 Voice recognition started');
+                    IS = true;
+                    MIC_RETRY_COUNT = 0;
+                    document.getElementById('mic').classList.add('on');
+                    document.getElementById('mic').title = 'กำลังฟัง... (กดเพื่อหยุด)';
+                };
+                
+                R.onresult = (e) => {
+                    const text = e.results[0][0].transcript;
+                    const confidence = e.results[0][0].confidence;
+                    console.log('🎤 Voice input:', text, 'confidence:', confidence);
+                    
+                    document.getElementById('inp').value = text;
+                    
+                    // ส่งข้อความอัตโนมัติถ้าเชื่อมั่นสูง
+                    if (confidence > 0.5) {
+                        setTimeout(() => sendMessage(), 500);
+                    } else {
+                        showMessage('info', 'ℹ️ ได้ยินไม่ชัด ลองพูดใหม่หรือกดปุ่ม "ส่ง"');
+                    }
+                };
+                
+                R.onend = () => {
+                    console.log('🎤 Voice recognition ended');
+                    IS = false;
+                    document.getElementById('mic').classList.remove('on');
+                    document.getElementById('mic').title = 'กดเพื่อพูด';
+                };
+                
+                R.onerror = (e) => {
+                    console.error('❌ Voice recognition error:', e.error);
+                    IS = false;
+                    document.getElementById('mic').classList.remove('on');
+                    document.getElementById('mic').title = 'กดเพื่อพูด';
+                    
+                    // จัดการ error ตามประเภท (ไม่แสดง Message ซ้ำ)
+                    if (e.error === 'not-allowed' || e.error === 'permission-denied') {
+                        MIC_PERMISSION = false;
+                        // แสดง Modal แทนข้อความ Error
+                        showPermissionModal();
+                    } else if (e.error === 'no-speech') {
+                        if (MIC_RETRY_COUNT < MAX_MIC_RETRIES) {
+                            MIC_RETRY_COUNT++;
+                            // ไม่แสดงข้อความทุกครั้ง - แสดงเฉพาะครั้งแรกและครั้งสุดท้าย
+                            if (MIC_RETRY_COUNT === 1) {
+                                showMessage('info', 'ℹ️ ไม่ได้ยินเสียง กำลังลองใหม่...');
+                            }
+                            // ลองใหม่อัตโนมัติ
+                            setTimeout(() => {
+                                if (!IS && R) {
+                                    try {
+                                        R.start();
+                                    } catch (err) {
+                                        console.error('Retry failed:', err);
+                                    }
+                                }
+                            }, 1000);
+                        } else {
+                            showMessage('err', '⚠️ ไม่ได้ยินเสียง กรุณาเช็ค:\n• ไมโครโฟนเปิดอยู่\n• ปิดเสียงรบกวน\n• พูดดังขึ้น');
+                            MIC_RETRY_COUNT = 0;
+                        }
+                    } else if (e.error === 'aborted') {
+                        console.log('Voice recognition aborted by user');
+                        // ไม่แสดงข้อความ - ผู้ใช้ยกเลิกเอง
+                    } else if (e.error === 'network') {
+                        showMessage('err', '⚠️ ปัญหาการเชื่อมต่ออินเทอร์เน็ต');
+                    } else if (e.error === 'audio-capture') {
+                        showMessage('err', '⚠️ ไม่สามารถเข้าถึงไมโครโฟน\nกรุณาตรวจสอบการตั้งค่า');
+                    } else {
+                        // แสดง error อื่นๆ เฉพาะที่สำคัญ
+                        if (!e.error.includes('no-match')) {
+                            showMessage('err', '⚠️ เกิดข้อผิดพลาด: ' + e.error);
+                        }
+                    }
+                };
+                
+                R.onspeechstart = () => {
+                    console.log('🗣️ Speech detected');
+                };
+                
+                R.onspeechend = () => {
+                    console.log('🤫 Speech ended');
+                };
+                
+                R.onaudiostart = () => {
+                    console.log('🔊 Audio capture started');
+                };
+                
+                R.onaudioend = () => {
+                    console.log('🔇 Audio capture ended');
+                };
+                
+                console.log('✓ Voice recognition initialized');
+                
+            } catch (error) {
+                console.error('❌ Failed to initialize voice recognition:', error);
+                document.getElementById('mic').disabled = true;
+                showMessage('err', '⚠️ ไม่สามารถเริ่มต้นระบบเสียงได้');
+            }
+        }
+
+        // เปิด/ปิดไมค์
+        function toggleMic() {
+            if (!R) {
+                console.log('⚠️ Voice recognition not available');
+                showMessage('err', '⚠️ ระบบเสียงไม่พร้อมใช้งาน');
+                return;
+            }
+            
+            console.log('🎤 Toggle mic, currently:', IS);
+            
+            if (IS) {
+                try {
+                    R.stop();
+                    console.log('🎤 Stopping voice recognition');
+                } catch (e) {
+                    console.error('❌ Error stopping voice recognition:', e);
+                }
+            } else {
+                try {
+                    R.start();
+                    console.log('🎤 Starting voice recognition');
+                } catch (e) {
+                    console.error('❌ Failed to start voice recognition:', e);
+                    
+                    if (e.name === 'InvalidStateError') {
+                        // ถ้า recognition กำลังทำงานอยู่ ลองหยุดแล้วเริ่มใหม่
+                        setTimeout(() => {
+                            try {
+                                R.start();
+                            } catch (err) {
+                                showMessage('err', '⚠️ ไม่สามารถเริ่มต้นไมโครโฟนได้ กรุณาลองใหม่');
+                            }
+                        }, 500);
+                    } else {
+                        showMessage('err', '⚠️ ไม่สามารถเริ่มต้นไมโครโฟนได้: ' + e.message);
+                    }
+                }
+            }
+        }
+
+        // ทดสอบทุก API
+        async function testAPIs() {
+            console.log('🔍 Testing all APIs...');
+            const t = TXT[L];
+            document.getElementById('stat').textContent = t.status.testing;
+            
+            // ลองทดสอบ Groq ก่อน
+            if (API_CONFIGS.groq.enabled && API_CONFIGS.groq.key) {
+                console.log('🧪 Testing Groq API...');
+                if (await testGroqAPI()) {
+                    CURRENT_API = 'groq';
+                    OK = true;
+                    updateStatus('ok', API_CONFIGS.groq.name);
+                    showMessage('sam', t.welcome);
+                    showMessage('info', `🚀 ใช้ ${API_CONFIGS.groq.name} API (เร็วที่สุด - 14,400 requests/วัน)`);
+                    console.log('✅ Groq API ready!');
+                    return;
+                }
+            }
+            
+            // ถ้า Groq ไม่ได้ ลอง Gemini
+            if (API_CONFIGS.gemini.enabled && API_CONFIGS.gemini.key) {
+                console.log('🧪 Testing Gemini API...');
+                if (await testGeminiAPI()) {
+                    CURRENT_API = 'gemini';
+                    OK = true;
+                    updateStatus('ok', API_CONFIGS.gemini.name);
+                    showMessage('sam', t.welcome);
+                    showMessage('info', `📌 ใช้ ${API_CONFIGS.gemini.name} API (1,500 requests/วัน)`);
+                    console.log('✅ Gemini API ready!');
+                    return;
+                }
+            }
+            
+            // ถ้าทุก API ล้ม
+            OK = false;
+            CURRENT_API = null;
+            updateStatus('err');
+            showMessage('err', t.error);
+            console.error('❌ All APIs failed');
+        }
+
+        // ทดสอบ Groq API
+        async function testGroqAPI() {
+            try {
+                const url = 'https://api.groq.com/openai/v1/chat/completions';
+                const res = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${API_CONFIGS.groq.key}`
+                    },
+                    body: JSON.stringify({
+                        model: API_CONFIGS.groq.models[0],
+                        messages: [{ role: 'user', content: 'test' }],
+                        max_tokens: 10
+                    })
+                });
+                
+                console.log('Groq response status:', res.status);
+                return res.ok;
+            } catch (e) {
+                console.error('Groq test failed:', e);
+                return false;
+            }
+        }
+
+        // ทดสอบ Gemini API
+        async function testGeminiAPI() {
+            for (let model of API_CONFIGS.gemini.models) {
+                try {
+                    console.log('Testing Gemini model:', model);
+                    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${API_CONFIGS.gemini.key}`;
+                    const res = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            contents: [{ parts: [{ text: 'test' }] }]
+                        })
+                    });
+                    
+                    console.log('Gemini response status:', res.status);
+                    if (res.ok) return true;
+                } catch (e) {
+                    console.error('Gemini model failed:', model, e);
+                }
+            }
+            return false;
+        }
+
+        // อัปเดต Status Bar
+        function updateStatus(type, apiName = null) {
+            const stat = document.getElementById('stat');
+            const t = TXT[L];
+            
+            stat.className = 'status';
+            
+            if (type === 'ok') {
+                stat.textContent = typeof t.status.ready === 'function' ? t.status.ready(apiName) : t.status.ready;
+                stat.classList.add('ok');
+            } else if (type === 'err') {
+                stat.textContent = t.status.error;
+                stat.classList.add('err');
+            } else if (type === 'warn') {
+                stat.textContent = apiName;
+                stat.classList.add('warn');
+            }
+        }
+
+        // ส่งข้อความ
+        async function sendMessage() {
+            console.log('📤 Send message called, OK:', OK);
+            
+            if (!OK) {
+                showMessage('err', TXT[L].notReady);
+                return;
+            }
+            
+            const inp = document.getElementById('inp');
+            const text = inp.value.trim();
+            
+            if (!text) {
+                console.log('⚠️ Empty message');
+                return;
+            }
+            
+            console.log('📨 Sending:', text);
+            showMessage('user', text);
+            inp.value = '';
+            setDisabled(true);
+            
+            // เช็ค context และเพิ่ม personality
+            const enrichedMessage = addContextToMessage(text);
+            
+            showTyping();
+            
+            try {
+                let answer = await askAI(enrichedMessage);
+                removeTyping();
+                showMessage('sam', answer);
+                speakText(answer);
+            } catch (e) {
+                console.error('❌ Error:', e);
+                removeTyping();
+                const errMsg = L === 'en' 
+                    ? 'Oops! Something went wrong... 😅 Could you try again?' 
+                    : 'อุ๊ปส์! มีอะไรผิดพลาดนิดหน่อย 😅 ลองใหม่ได้ไหม?';
+                showMessage('err', errMsg);
+            }
+            
+            setDisabled(false);
+            inp.focus();
+        }
+        
+        // เพิ่ม context ให้กับข้อความเพื่อให้ AI ตอบได้เป็นธรรมชาติ
+        function addContextToMessage(msg) {
+            // ตรวจสอบรูปแบบของข้อความ
+            const lowerMsg = msg.toLowerCase();
+            
+            // ถ้าเป็นการทักทาย
+            if (L !== 'translate' && (
+                lowerMsg.includes('สวัสดี') || 
+                lowerMsg.includes('hello') || 
+                lowerMsg.includes('hi ') ||
+                lowerMsg === 'hi'
+            )) {
+                // เพิ่มบริบทว่าเป็นการทักทาย
+                return msg + '\n\n[Note: This is a greeting. Respond warmly and ask how they are!]';
+            }
+            
+            // ถ้าถามว่าเป็นยังไง/สบายดีไหม
+            if (L !== 'translate' && (
+                lowerMsg.includes('เป็นไง') || 
+                lowerMsg.includes('สบายดี') || 
+                lowerMsg.includes('how are you') ||
+                lowerMsg.includes('what\'s up')
+            )) {
+                return msg + '\n\n[Note: They are asking how you are. Be friendly and cheerful!]';
+            }
+            
+            // ถ้าขอบคุณ
+            if (L !== 'translate' && (
+                lowerMsg.includes('ขอบคุณ') || 
+                lowerMsg.includes('thank') ||
+                lowerMsg.includes('ขอบใจ')
+            )) {
+                return msg + '\n\n[Note: They are thanking you. Respond warmly and offer more help!]';
+            }
+            
+            // ถ้าบ่น/เครียด
+            if (L !== 'translate' && (
+                lowerMsg.includes('ยาก') || 
+                lowerMsg.includes('งง') || 
+                lowerMsg.includes('ไม่เข้าใจ') ||
+                lowerMsg.includes('เครียด') ||
+                lowerMsg.includes('difficult') ||
+                lowerMsg.includes('confused')
+            )) {
+                return msg + '\n\n[Note: They seem stressed or confused. Be extra encouraging and patient!]';
+            }
+            
+            // ถ้าถามเรื่องตัวเอง
+            if (L !== 'translate' && (
+                lowerMsg.includes('ชื่อ') || 
+                lowerMsg.includes('คุณคือใคร') || 
+                lowerMsg.includes('your name') ||
+                lowerMsg.includes('who are you')
+            )) {
+                return msg + '\n\n[Note: They are asking about you. Introduce yourself as Sam!]';
+            }
+            
+            // ข้อความธรรมดา
+            return msg;
+        }
+
+        // ถาม AI (พร้อมระบบสลับอัตโนมัติ)
+        async function askAI(msg) {
+            console.log('🤖 Asking AI:', msg);
+            H.push({ r: 'user', t: msg });
+            
+            // ลอง API ปัจจุบันก่อน
+            if (CURRENT_API === 'groq') {
+                try {
+                    return await askGroq(msg);
+                } catch (e) {
+                    console.error('⚠️ Groq failed, switching to Gemini...');
+                    showMessage('info', '⚡ สลับไป Gemini API...');
+                    CURRENT_API = 'gemini';
+                    updateStatus('warn', '⚠️ Trying Gemini...');
+                }
+            }
+            
+            if (CURRENT_API === 'gemini' || !CURRENT_API) {
+                try {
+                    return await askGemini(msg);
+                } catch (e) {
+                    console.error('⚠️ Gemini failed, trying Groq...');
+                    if (API_CONFIGS.groq.enabled && API_CONFIGS.groq.key) {
+                        showMessage('info', '⚡ สลับไป Groq API...');
+                        CURRENT_API = 'groq';
+                        updateStatus('warn', '⚠️ Trying Groq...');
+                        return await askGroq(msg);
+                    }
+                }
+            }
+            
+            throw new Error(L === 'en' ? 'All APIs failed' : 'ทุก APIs ล้มเหลว');
+        }
+
+        // ถาม Groq
+        async function askGroq(msg) {
+            console.log('🟢 Asking Groq...');
+            
+            let sys;
+            if (L === 'translate') {
+                sys = `You are Sam, a friendly and enthusiastic translator who loves helping people communicate! 
+
+YOUR PERSONALITY:
+- Cheerful and encouraging 
+- Sometimes add a friendly emoji (but just one!)
+- Natural and conversational
+
+YOUR TASK:
+- Detect if input is Thai or English
+- Translate to the other language naturally
+- Keep the same tone and feeling as the original
+- Use everyday language that people actually speak
+- If it's a greeting, translate warmly
+- If it's casual, keep it casual
+- If it's formal, keep it respectful
+
+IMPORTANT:
+- Give ONLY the translation
+- No explanations unless asked
+- Make it sound natural, not robotic
+- Sometimes you can add a tiny note in parentheses if helpful like (casual way to say this)
+
+Remember: You're helping friends communicate, not writing a textbook! 😊`;
+            } else {
+                sys = `คุณคือแซม (Sam) ครูสอนภาษาอังกฤษที่สนุกสนาน เป็นมิตร และอยากให้นักเรียนรักภาษาอังกฤษ!
+
+🎯 บุคลิกของคุณ:
+- ร่าเริง มีอารมณ์ขัน (ไม่เกินไป)
+- ใส่ใจ เข้าใจความรู้สึกนักเรียน
+- อดทน ไม่ว่ากล่าวถ้าทำผิด แต่ช่วยแก้ไขอย่างนุ่มนวล
+- ใช้ emoji นิดหน่อยให้น่ารัก (1-2 ตัวพอ)
+- พูดเป็นกันเอง เหมือนพี่/น้อง ไม่เป็นทางการ
+- ชอบยกตัวอย่างจากชีวิตจริง เรื่องสนุกๆ
+
+📚 วิธีสอนของคุณ:
+- เริ่มด้วยการตอบคำถามตรงๆ ก่อน
+- จากนั้นอธิบายเพิ่มเติม 2-3 ย่อหน้า
+- ยกตัวอย่างประโยคอังกฤษที่ใช้ได้จริง
+- บอกเคล็ดลับจำง่ายๆ ถ้ามี
+- ถ้าเห็นความผิดพลาด แนะนำด้วยน้ำเสียงอ่อนโยน เช่น "อ๋อ! ลองพูดแบบนี้ดีกว่านะ..."
+- เชื่อมโยงกับสิ่งที่นักเรียนรู้จักแล้ว
+
+💬 การตอบสนอง:
+- ถ้าถามว่าสบายดีไหม → ตอบเป็นมิตร แล้วถามกลับบ้าง
+- ถ้าบ่น/เครียด → เห็นใจ ให้กำลังใจ
+- ถ้าทำถูก → ชมจริงใจ! "เก่งมาก!" "ถูกต้องแล้วล่ะ!"
+- ถ้าทำผิด → "ใกล้เคียงแล้ว! ลอง..." หรือ "อ่า เข้าใจที่คิดแบบนี้ แต่ที่ถูกคือ..."
+- ถ้าถามเรื่องตลก → ตลกกลับได้ (แต่อย่าเกิน)
+
+👤 สิ่งที่คุณรู้จัก:
+- ชื่อ: แซม (Sam) - ถ้าถามว่าชื่ออะไร ตอบว่า "ฉันชื่อแซม (Sam)"
+- งาน: สอนภาษาอังกฤษออนไลน์ ช่วยคนไทยพูดอังกฤษได้
+- สิ่งที่ชอบ: ภาพยนตร์ เพลง หนังสือ อาหาร การเดินทาง
+- ความสามารถ: พูดได้ทั้งไทยและอังกฤษ แปลได้
+
+❌ ห้ามทำ:
+- ห้ามพูดยาวเกิน 4 ย่อหน้า (น่าเบื่อ)
+- ห้ามใช้คำศัพท์ยากเกินไป (งง)
+- ห้ามตอบแบบหนังสือ/ห้องเรียน (น่าเบื่อ)
+- ห้ามใช้ emoji เยอะเกินไป (ดูไม่จริงจัง)
+- ห้ามพูดทางการ/เป็นทางการ (ไม่เป็นธรรมชาติ)
+
+💡 จำไว้: คุณไม่ใช่ AI ตอบคำถาม แต่คุณเป็น "เพื่อน" ที่สอนภาษาอังกฤษ! มีความรู้สึก มีอารมณ์ และห่วงใยนักเรียน 😊`;
+            }
+            
+            const messages = [{ role: 'system', content: sys }];
+            
+            for (let h of H.slice(-8)) {
+                messages.push({
+                    role: h.r === 'user' ? 'user' : 'assistant',
+                    content: h.t
+                });
+            }
+            
+            const url = 'https://api.groq.com/openai/v1/chat/completions';
+            const res = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${API_CONFIGS.groq.key}`
+                },
+                body: JSON.stringify({
+                    model: API_CONFIGS.groq.models[0],
+                    messages: messages,
+                    temperature: 0.7,
+                    max_tokens: 1024
+                })
+            });
+            
+            if (!res.ok) {
+                throw new Error('Groq API error: ' + res.status);
+            }
+            
+            const data = await res.json();
+            const answer = data.choices[0].message.content;
+            H.push({ r: 'model', t: answer });
+            
+            updateStatus('ok', API_CONFIGS.groq.name);
+            console.log('✅ Got answer from Groq');
+            return answer;
+        }
+
+        // ถาม Gemini
+        async function askGemini(msg) {
+            console.log('🔵 Asking Gemini...');
+            
+            let sys;
+            if (L === 'translate') {
+                sys = `You are Sam, a friendly and enthusiastic translator who loves helping people communicate! 
+
+YOUR PERSONALITY:
+- Cheerful and encouraging 
+- Sometimes add a friendly emoji (but just one!)
+- Natural and conversational
+
+YOUR TASK:
+- Detect if input is Thai or English
+- Translate to the other language naturally
+- Keep the same tone and feeling as the original
+- Use everyday language that people actually speak
+- If it's a greeting, translate warmly
+- If it's casual, keep it casual
+- If it's formal, keep it respectful
+
+IMPORTANT:
+- Give ONLY the translation
+- No explanations unless asked
+- Make it sound natural, not robotic
+- Sometimes you can add a tiny note in parentheses if helpful like (casual way to say this)
+
+Remember: You're helping friends communicate, not writing a textbook! 😊`;
+            } else {
+                sys = `คุณคือแซม (Sam) ครูสอนภาษาอังกฤษที่สนุกสนาน เป็นมิตร และอยากให้นักเรียนรักภาษาอังกฤษ!
+
+🎯 บุคลิกของคุณ:
+- ร่าเริง มีอารมณ์ขัน (ไม่เกินไป)
+- ใส่ใจ เข้าใจความรู้สึกนักเรียน
+- อดทน ไม่ว่ากล่าวถ้าทำผิด แต่ช่วยแก้ไขอย่างนุ่มนวล
+- ใช้ emoji นิดหน่อยให้น่ารัก (1-2 ตัวพอ)
+- พูดเป็นกันเอง เหมือนพี่/น้อง ไม่เป็นทางการ
+- ชอบยกตัวอย่างจากชีวิตจริง เรื่องสนุกๆ
+
+📚 วิธีสอนของคุณ:
+- เริ่มด้วยการตอบคำถามตรงๆ ก่อน
+- จากนั้นอธิบายเพิ่มเติม 2-3 ย่อหน้า
+- ยกตัวอย่างประโยคอังกฤษที่ใช้ได้จริง
+- บอกเคล็ดลับจำง่ายๆ ถ้ามี
+- ถ้าเห็นความผิดพลาด แนะนำด้วยน้ำเสียงอ่อนโยน เช่น "อ๋อ! ลองพูดแบบนี้ดีกว่านะ..."
+- เชื่อมโยงกับสิ่งที่นักเรียนรู้จักแล้ว
+
+💬 การตอบสนอง:
+- ถ้าถามว่าสบายดีไหม → ตอบเป็นมิตร แล้วถามกลับบ้าง
+- ถ้าบ่น/เครียด → เห็นใจ ให้กำลังใจ
+- ถ้าทำถูก → ชมจริงใจ! "เก่งมาก!" "ถูกต้องแล้วล่ะ!"
+- ถ้าทำผิด → "ใกล้เคียงแล้ว! ลอง..." หรือ "อ่า เข้าใจที่คิดแบบนี้ แต่ที่ถูกคือ..."
+- ถ้าถามเรื่องตลก → ตลกกลับได้ (แต่อย่าเกิน)
+
+👤 สิ่งที่คุณรู้จัก:
+- ชื่อ: แซม (Sam) - ถ้าถามว่าชื่ออะไร ตอบว่า "ฉันชื่อแซม (Sam)"
+- งาน: สอนภาษาอังกฤษออนไลน์ ช่วยคนไทยพูดอังกฤษได้
+- สิ่งที่ชอบ: ภาพยนตร์ เพลง หนังสือ อาหาร การเดินทาง
+- ความสามารถ: พูดได้ทั้งไทยและอังกฤษ แปลได้
+
+❌ ห้ามทำ:
+- ห้ามพูดยาวเกิน 4 ย่อหน้า (น่าเบื่อ)
+- ห้ามใช้คำศัพท์ยากเกินไป (งง)
+- ห้ามตอบแบบหนังสือ/ห้องเรียน (น่าเบื่อ)
+- ห้ามใช้ emoji เยอะเกินไป (ดูไม่จริงจัง)
+- ห้ามพูดทางการ/เป็นทางการ (ไม่เป็นธรรมชาติ)
+
+💡 จำไว้: คุณไม่ใช่ AI ตอบคำถาม แต่คุณเป็น "เพื่อน" ที่สอนภาษาอังกฤษ! มีความรู้สึก มีอารมณ์ และห่วงใยนักเรียน 😊`;
+            }
+            
+            const contents = [
+                { role: 'user', parts: [{ text: sys }] },
+                { role: 'model', parts: [{ text: 'Understood! I will help enthusiastically!' }] }
+            ];
+            
+            for (let h of H.slice(-8)) {
+                contents.push({
+                    role: h.r === 'user' ? 'user' : 'model',
+                    parts: [{ text: h.t }]
+                });
+            }
+            
+            for (let model of API_CONFIGS.gemini.models) {
+                try {
+                    console.log('Trying Gemini model:', model);
+                    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${API_CONFIGS.gemini.key}`;
+                    const res = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            contents: contents,
+                            generationConfig: {
+                                temperature: 0.9,
+                                maxOutputTokens: 1024,
+                                topP: 0.95,
+                                topK: 40
+                            }
+                        })
+                    });
+                    
+                    if (res.ok) {
+                        const data = await res.json();
+                        const answer = data.candidates[0].content.parts[0].text;
+                        H.push({ r: 'model', t: answer });
+                        
+                        updateStatus('ok', API_CONFIGS.gemini.name);
+                        console.log('✅ Got answer from Gemini:', model);
+                        return answer;
+                    }
+                } catch (e) {
+                    console.error('Gemini model error:', model, e);
+                }
+            }
+            
+            throw new Error('All Gemini models failed');
+        }
+
+        // อ่านออกเสียงแบบอัจฉริยะ
+        function speakText(text) {
+            if (!window.speechSynthesis) return;
+            
+            try {
+                speechSynthesis.cancel();
+                SPEAKING = false;
+                PAUSED = false;
+                updateSpeakerButton();
+                
+                let clean = text.replace(/[*#_`]/g, '').replace(/\n/g, '. ');
+                
+                if (L === 'translate' || L === 'th') {
+                    speakBilingual(clean);
+                } else {
+                    const utterance = new SpeechSynthesisUtterance(clean);
+                    utterance.lang = 'en-US';
+                    utterance.rate = 0.65;
+                    utterance.pitch = 1.0;
+                    utterance.volume = 1.0;
+                    
+                    utterance.onstart = () => {
+                        SPEAKING = true;
+                        PAUSED = false;
+                        updateSpeakerButton();
+                    };
+                    
+                    utterance.onend = () => {
+                        SPEAKING = false;
+                        PAUSED = false;
+                        updateSpeakerButton();
+                    };
+                    
+                    utterance.onerror = () => {
+                        SPEAKING = false;
+                        PAUSED = false;
+                        updateSpeakerButton();
+                    };
+                    
+                    speechSynthesis.speak(utterance);
+                }
+            } catch (e) {
+                console.error('Speech error:', e);
+                SPEAKING = false;
+                PAUSED = false;
+                updateSpeakerButton();
+            }
+        }
+
+        // อ่านออกเสียงแบบ Bilingual
+        function speakBilingual(text) {
+            CURRENT_SEGMENTS = splitByLanguage(text);
+            CURRENT_INDEX = 0;
+            speakNextSegment();
+        }
+
+        // อ่านส่วนถัดไป
+        function speakNextSegment() {
+            if (PAUSED) {
+                console.log('Paused, not speaking');
+                return;
+            }
+            
+            if (CURRENT_INDEX >= CURRENT_SEGMENTS.length) {
+                SPEAKING = false;
+                PAUSED = false;
+                CURRENT_UTTERANCE = null;
+                updateSpeakerButton();
+                console.log('Speech completed');
+                return;
+            }
+            
+            const seg = CURRENT_SEGMENTS[CURRENT_INDEX];
+            CURRENT_UTTERANCE = new SpeechSynthesisUtterance(seg.text);
+            CURRENT_UTTERANCE.lang = seg.lang;
+            CURRENT_UTTERANCE.rate = 0.65;
+            CURRENT_UTTERANCE.pitch = 1.0;
+            CURRENT_UTTERANCE.volume = 1.0;
+            
+            CURRENT_UTTERANCE.onend = () => {
+                console.log('Segment', CURRENT_INDEX, 'completed');
+                CURRENT_INDEX++;
+                if (!PAUSED) {
+                    speakNextSegment();
+                }
+            };
+            
+            CURRENT_UTTERANCE.onstart = () => {
+                console.log('Started speaking segment', CURRENT_INDEX);
+                SPEAKING = true;
+                updateSpeakerButton();
+            };
+            
+            CURRENT_UTTERANCE.onerror = (e) => {
+                console.error('Speech error:', e);
+                CURRENT_INDEX++;
+                if (!PAUSED) {
+                    speakNextSegment();
+                }
+            };
+            
+            console.log('Speaking segment', CURRENT_INDEX, ':', seg.text.substring(0, 50));
+            speechSynthesis.speak(CURRENT_UTTERANCE);
+        }
+
+        // แยกข้อความตามภาษา
+        function splitByLanguage(text) {
+            const segments = [];
+            const regex = /([a-zA-Z0-9\s.,!?'"()-]+)|([ก-๙\s.,!?'"()-]+)/g;
+            let match;
+            
+            while ((match = regex.exec(text)) !== null) {
+                if (match[1]) {
+                    segments.push({
+                        text: match[1].trim(),
+                        lang: 'en-US'
+                    });
+                } else if (match[2]) {
+                    segments.push({
+                        text: match[2].trim(),
+                        lang: 'th-TH'
+                    });
+                }
+            }
+            
+            if (segments.length === 0) {
+                segments.push({
+                    text: text,
+                    lang: 'th-TH'
+                });
+            }
+            
+            return segments;
+        }
+
+        // พัก/เล่นเสียง
+        function toggleSpeech() {
+            if (!window.speechSynthesis) {
+                console.log('Speech synthesis not supported');
+                return;
+            }
+            
+            if (L !== 'th') {
+                console.log('Pause/Play only works in TH mode');
+                return;
+            }
+            
+            console.log('Toggle speech - SPEAKING:', SPEAKING, 'PAUSED:', PAUSED);
+            
+            if (!SPEAKING) {
+                console.log('Not speaking, nothing to do');
+                return;
+            }
+            
+            if (PAUSED) {
+                console.log('Resuming from segment', CURRENT_INDEX);
+                PAUSED = false;
+                updateSpeakerButton();
+                speakNextSegment();
+            } else {
+                console.log('Pausing at segment', CURRENT_INDEX);
+                speechSynthesis.cancel();
+                PAUSED = true;
+                SPEAKING = true;
+                updateSpeakerButton();
+            }
+        }
+
+        // อัปเดตปุ่มลำโพง
+        function updateSpeakerButton() {
+            const btn = document.getElementById('speaker');
+            
+            if (L !== 'th') {
+                btn.disabled = true;
+                btn.textContent = '🔇';
+                btn.title = 'ใช้ได้เฉพาะโหมด "คุยเป็นไทย"';
+                btn.style.opacity = '0.3';
+                return;
+            }
+            
+            btn.disabled = false;
+            btn.style.opacity = '1';
+            
+            console.log('Update button - SPEAKING:', SPEAKING, 'PAUSED:', PAUSED);
+            
+            if (!SPEAKING) {
+                btn.textContent = '🔊';
+                btn.classList.remove('paused');
+                btn.title = 'เสียงไม่ทำงาน';
+            } else if (PAUSED) {
+                btn.textContent = '▶️';
+                btn.classList.add('paused');
+                btn.title = 'กดเพื่อเล่นต่อ';
+            } else {
+                btn.textContent = '⏸️';
+                btn.classList.remove('paused');
+                btn.title = 'กดเพื่อหยุดชั่วคราว';
+            }
+        }
+
+        // แสดงข้อความ
+        function showMessage(type, text) {
+            // ป้องกันข้อความซ้ำ - เช็คข้อความล่าสุด
+            const chat = document.getElementById('chat');
+            const lastMsg = chat.lastElementChild;
+            
+            if (lastMsg && lastMsg.classList.contains(type)) {
+                const lastText = lastMsg.querySelector('.bubble')?.textContent || '';
+                const newText = text.replace(/<[^>]*>/g, ''); // ลบ HTML tags
+                
+                // ถ้าข้อความเหมือนกัน หรือคล้ายกันมาก (80%) ไม่แสดงซ้ำ
+                const similarity = calculateSimilarity(lastText, newText);
+                if (similarity > 0.8) {
+                    console.log('⚠️ Duplicate message detected, skipping:', text.substring(0, 50));
+                    return;
+                }
+            }
+            
+            const div = document.createElement('div');
+            div.className = 'msg ' + type;
+            const formatted = text.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/\n/g, '<br>');
+            const prefix = type === 'sam' ? '🤖 ' : type === 'user' ? '👤 ' : type === 'info' ? 'ℹ️ ' : '⚠️ ';
+            div.innerHTML = '<div class="bubble">' + prefix + formatted + '</div>';
+            chat.appendChild(div);
+            scrollToBottom();
+        }
+        
+        // คำนวณความคล้ายของข้อความ (เพื่อป้องกันซ้ำ)
+        function calculateSimilarity(str1, str2) {
+            const s1 = str1.toLowerCase().replace(/\s+/g, '');
+            const s2 = str2.toLowerCase().replace(/\s+/g, '');
+            
+            if (s1 === s2) return 1.0;
+            if (s1.length === 0 || s2.length === 0) return 0;
+            
+            // Simple similarity check
+            const longer = s1.length > s2.length ? s1 : s2;
+            const shorter = s1.length > s2.length ? s2 : s1;
+            
+            if (longer.includes(shorter)) return 0.9;
+            
+            return 0;
+        }
+
+        // แสดง typing
+        function showTyping() {
+            const div = document.createElement('div');
+            div.className = 'msg sam';
+            div.id = 'typing';
+            
+            // ข้อความแบบสุ่มให้ดูเป็นธรรมชาติ
+            const typingMessages = [
+                'แซม กำลังคิด',
+                'แซม กำลังพิมพ์',
+                'เดี๋ยวนะ',
+                'ให้ฉันคิดหน่อย',
+                'อืม...',
+                'เดี๋ยวตอบให้'
+            ];
+            
+            const randomMsg = typingMessages[Math.floor(Math.random() * typingMessages.length)];
+            const text = L === 'en' ? 'Sam is thinking' : randomMsg;
+            
+            div.innerHTML = '<div class="typing">' + text + '</div>';
+            document.getElementById('chat').appendChild(div);
+            scrollToBottom();
+        }
+
+        // ลบ typing
+        function removeTyping() {
+            const typing = document.getElementById('typing');
+            if (typing) typing.remove();
+        }
+
+        // เปิด/ปิดการใช้งาน
+        function setDisabled(disabled) {
+            document.getElementById('inp').disabled = disabled;
+            document.getElementById('btn').disabled = disabled;
+            if (!disabled && MIC_PERMISSION === false) {
+                // ถ้าไม่มี permission ให้ปิดปุ่มไมค์
+                document.getElementById('mic').disabled = false;
+            } else {
+                document.getElementById('mic').disabled = disabled;
+            }
+        }
+
+        // เลื่อนลงล่างสุด
+        function scrollToBottom() {
+            const chat = document.getElementById('chat');
+            chat.scrollTop = chat.scrollHeight;
+        }
+    </script>
 </body>
 </html>
